@@ -42,5 +42,9 @@ public class MessageService {
         messageDAO.deleteMessageById(id);
         return exists;
     }
+
+    public List<Message> getMessagesByUser(int id) {
+        return messageDAO.getMessagesByUser(id);
+    }
     
 }
