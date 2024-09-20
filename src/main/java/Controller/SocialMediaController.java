@@ -48,6 +48,8 @@ public class SocialMediaController {
 
         app.get("/messages", this::getAllMessages);
 
+        app.get("/messages/{id}", this::getMessageById);
+
         return app;
     }
 
@@ -116,9 +118,23 @@ public class SocialMediaController {
         context.json(msg);
     }
 
-    private void getAllMessages(Context context) throws JsonMappingException, JsonProcessingException{
+    private void getAllMessages(Context context){
         context.status(200);
         context.json(messageService.getAllMessages());
+    }
+
+    private void getMessageById(Context context){
+        int id = Integer.parseInt(context.pathParam("id"));
+
+        Message msg = messageService.getMessageById(id);
+        if(msg == null){
+            context.status(200);
+            return;
+        }
+
+        context.status(200);
+        context.json(messageService.getMessageById(id));
+
     }
 
 }
