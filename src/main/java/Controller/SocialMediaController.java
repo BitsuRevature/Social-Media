@@ -1,5 +1,11 @@
 package Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import Model.Account;
+import Service.AuthService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -9,14 +15,28 @@ import io.javalin.http.Context;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+
+    private AuthService authService;
+    private ObjectMapper objectMapper;
+
+    public SocialMediaController(){
+        this.authService = new AuthService();
+        objectMapper = new ObjectMapper();
+    }
+
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
      * @return a Javalin app object which defines the behavior of the Javalin controller.
      */
     public Javalin startAPI() {
+
+
+
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
+
+        app.post("/register", this::registerUser);
 
         return app;
     }
@@ -27,6 +47,30 @@ public class SocialMediaController {
      */
     private void exampleHandler(Context context) {
         context.json("sample text");
+    }
+
+    private void registerUser(Context context) throws JsonMappingException, JsonProcessingException{
+
+
+        Account newAcc = objectMapper.readValue(context.body(), Account.class);
+        if(newAcc.getUsername().isBlank() || 
+            newAcc.getUsername().isEmpty() ||
+            newAcc.getPassword().length() < 4) {
+            context.status(400);
+            return;
+        }
+        Account createdAccount = authService.registerAccount(newAcc);
+
+        if(createdAccount == null){
+            context.status(400);
+            return;
+        }
+
+        context.status(200);
+        context.json(createdAccount);
+
+
+
     }
 
 
