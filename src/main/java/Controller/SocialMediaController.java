@@ -55,7 +55,7 @@ public class SocialMediaController {
 
         app.delete("/messages/{id}", this::deleteMessageById);
 
-
+        app.patch("messages/{id}", this::updateMessage);
 
         app.get("/accounts/{id}/messages", this::getMessagesByUser);
 
@@ -168,4 +168,29 @@ public class SocialMediaController {
         context.json(messages);
     }
 
+
+    private void updateMessage(Context context) throws JsonMappingException, JsonProcessingException{
+        int id = Integer.parseInt(context.pathParam("id"));
+        Message update = objectMapper.readValue(context.body(), Message.class);
+        
+        Message msg = messageService.getMessageById(id);
+        if(msg == null 
+            || update.getMessage_text().isEmpty() 
+            || update.getMessage_text().isBlank() 
+            || update.getMessage_text().length() > 255
+            ){
+            context.status(400);
+            return;
+        }
+
+        msg = messageService.updateMessage(id, update);
+        if(msg == null){
+            context.status(400);
+            return;
+        }
+
+        context.status(200);
+        context.json(msg);
+        
+    }
 }

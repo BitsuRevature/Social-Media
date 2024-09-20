@@ -128,5 +128,23 @@ public class MessageDAO {
         }
         return messages;
     }
+
+    public int updateMessage(int id, Message update) {
+        var conn = ConnectionUtil.getConnection();
+        int result = 0;
+        try{
+
+            String sql = "UPDATE Message SET message_text = ? WHERE message_id = ?";
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, update.getMessage_text());
+            ps.setInt(2, id);
+
+            result = ps.executeUpdate();
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return result;
+    }
     
 }
