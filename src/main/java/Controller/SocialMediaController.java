@@ -38,6 +38,8 @@ public class SocialMediaController {
 
         app.post("/register", this::registerUser);
 
+        app.post("/login", this::login);
+
         return app;
     }
 
@@ -71,6 +73,20 @@ public class SocialMediaController {
 
 
 
+    }
+
+    private void login(Context context) throws JsonMappingException, JsonProcessingException{
+        Account acc = objectMapper.readValue(context.body(), Account.class);
+
+        Account existingAcc = authService.login(acc);
+
+        if(existingAcc == null){
+            context.status(401);
+            return;
+        }
+
+        context.status(200);
+        context.json(existingAcc);
     }
 
 

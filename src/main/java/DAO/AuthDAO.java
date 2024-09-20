@@ -60,5 +60,30 @@ public class AuthDAO {
         return null;
     }
 
+    public Account login(Account acc) {
+        var conn = ConnectionUtil.getConnection();
+
+        try{
+            String sql = "SELECT * FROM Account WHERE username = ? AND password = ?;";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, acc.getUsername());
+            ps.setString(2, acc.getPassword());
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                Account found = new Account(
+                    rs.getInt("account_id"),
+                    rs.getString("username"),
+                    rs.getString("password")
+                );
+                return found;
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
 }
 

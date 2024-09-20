@@ -22,5 +22,9 @@ public class AuthService {
 
        return authDAO.registerAccount(newAcc);
     }
+
+    public Account login(Account acc) {
+        return authDAO.login(acc);
+    }
     
 }
