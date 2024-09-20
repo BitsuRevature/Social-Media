@@ -46,6 +46,8 @@ public class SocialMediaController {
 
         app.post("/messages", this::createMessage);
 
+        app.get("/messages", this::getAllMessages);
+
         return app;
     }
 
@@ -114,5 +116,9 @@ public class SocialMediaController {
         context.json(msg);
     }
 
+    private void getAllMessages(Context context) throws JsonMappingException, JsonProcessingException{
+        context.status(200);
+        context.json(messageService.getAllMessages());
+    }
 
 }
