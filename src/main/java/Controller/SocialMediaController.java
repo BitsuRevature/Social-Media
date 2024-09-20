@@ -1,5 +1,7 @@
 package Controller;
 
+import java.net.ConnectException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,6 +51,8 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessages);
 
         app.get("/messages/{id}", this::getMessageById);
+
+        app.delete("/messages/{id}", this::deleteMessageById);
 
         return app;
     }
@@ -135,6 +139,19 @@ public class SocialMediaController {
         context.status(200);
         context.json(messageService.getMessageById(id));
 
+    }
+
+    private void deleteMessageById(Context context){
+        int id = Integer.parseInt(context.pathParam("id"));
+
+        Message msg = messageService.deleteMessageById(id);
+        if (msg == null) {
+            context.status(200);
+            return;
+        }
+
+        context.status(200);
+        context.json(msg);
     }
 
 }
